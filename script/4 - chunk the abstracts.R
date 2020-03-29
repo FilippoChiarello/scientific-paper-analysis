@@ -39,7 +39,7 @@ for(i in 1:n_papers){ # for each abstract
     # why _fixed? because inside the keywords there are also character that can
     # be interpreted as regex. Fixed does not consider them
     paper_abstracts[[i,2]] <- str_replace_all(paper_abstracts[[i,2]],
-                                                     str_c("\\b[^\\.]",switch_table[[j,1]], "\\b[^\\.]") ,
+                                                     str_c("\\b",switch_table[[j,1]], "\\b") ,
                                                      str_c(" ",switch_table[[j,3]], " "))
 
   }

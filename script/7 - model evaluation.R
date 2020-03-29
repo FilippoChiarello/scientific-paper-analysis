@@ -2,8 +2,9 @@ library(tidyverse)
 library(topicmodels)
 library(ldatuning)
 
-papers_dtm <- read_rds("data/papers_dtm.rds")
+papers_dtm <- read_rds("data/output_files/papers_dtm.rds")
 
+# Set the number max of topics to evaluate in "to" (in this case equal to 5)
 result <- FindTopicsNumber(
   papers_dtm,
   topics = seq(from = 2, to = 5, by = 1),
@@ -16,4 +17,5 @@ result <- FindTopicsNumber(
 
 FindTopicsNumber_plot(result)
 
+ggsave("data/images/model_evaluation.png")
 

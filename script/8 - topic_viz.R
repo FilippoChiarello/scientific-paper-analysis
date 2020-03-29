@@ -6,14 +6,19 @@ library(topicmodels)
 library(LDAvis)
 library(gistr)
 
-papers_dtm <- read_rds("data/papers_dtm.rds")
-papers_corpus <- read_rds("data/papers_corpus.rds")
+papers_dtm <- read_rds("data/output_files/papers_dtm.rds")
+papers_corpus <- read_rds("data/output_files/papers_corpus.rds")
+
+
 papers_lda <- LDA(papers_dtm, k = 3, control = list(seed = 1234))
 
-json_lda <- topicmodels_json_ldavis(fitted = papers_lda, 
+json_lda <- topicmodels_json_ldavis(fitted = papers_lda,
                                     corpus = papers_corpus,
                                     doc_term = papers_dtm
                                     )
+
+# PAY ATTENTION: for visualize the results in dashboard you must have
+# GitHub profile
 
 serVis(json_lda, as.gist = T)
 
@@ -33,7 +38,7 @@ ap_top_terms <- ap_topics %>%
     topic == 1 ~ 2,
     topic == 2 ~ 1,
     topic == 3 ~ 3
-  )) %>% 
+  )) %>%
   group_by(topic) %>%
   top_n(10, beta) %>%
   ungroup() %>%

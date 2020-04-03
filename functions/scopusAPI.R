@@ -1,4 +1,4 @@
-searchByString <- function(string, datatype = "application/xml", content = "complete", myStart = 0, retCount = 25, retMax = Inf, mySort = "-coverDate", outfile) {
+searchByString <- function(string, datatype = "application/xml", content = "complete", myStart = 0, retCount = 25, retMax = Inf, mySort = "-coverDate", outfile, key) {
 	if (!datatype %in% c("application/xml", "application/json", "application/atom+xml")) { ## error checking for valid inputs to the function
 		stop("Invalid datatype. Valid types are 'application/xml', 'application/json', and 'application/atom+xml'")
 	}
@@ -8,7 +8,7 @@ searchByString <- function(string, datatype = "application/xml", content = "comp
 	else {
 		library(httr)
 		library(XML)
-		key <- ""
+		key <- key
 		print("Retrieving records.")
 		theURL <- GET("http://api.elsevier.com/content/search/scopus", query = list(apiKey = key, query = string, sort = mySort, httpAccept = datatype, view = content, count = retCount, start = myStart)) ## format the URL to be sent to the API
 		stop_for_status(theURL) ## pass any HTTP errors to the R console
@@ -44,10 +44,10 @@ searchByString <- function(string, datatype = "application/xml", content = "comp
 	}
 }
 
-searchByID <- function(theIDs, idtype, datatype = "application/xml", content = "complete", myStart = 0, retCount = 25, outfile) {
+searchByID <- function(theIDs, idtype, datatype = "application/xml", content = "complete", myStart = 0, retCount = 25, outfile, key) {
 	library(httr)
 	library(XML)
-	key <- "e520467ff99de1c1098050af4b0e76ad"
+	key <- key
 	if (length(theIDs) == 1) {
 		theIDs <- unique(scan(theIDs, what = "varchar")) ## load the list of IDs into a character vector
 	}
@@ -161,7 +161,7 @@ extractXML <- function(theFile) {
 	pmid <- lapply(records, xpathSApply, "./cto:pubmed-id", xmlValue, namespaces = "cto") ## handle potentially missing pmid nodes: returns a list with the node value if the node is present and an empty list if the node is missing
 	pmid[sapply(pmid, is.list)] <- NA ## find the empty lists in pmid and set them to NA
 	pmid <- unlist(pmid) ## turn the pmid list into a vector
-	authLast <- lapply(records, xpathSApply, ".//cto:surname", xmlValue, namespaces = "cto") ## grab the surname and initials for each author in each record, then paste them together 
+	authLast <- lapply(records, xpathSApply, ".//cto:surname", xmlValue, namespaces = "cto") ## grab the surname and initials for each author in each record, then paste them together
 	authLast[sapply(authLast, is.list)] <- NA
 	authInit <- lapply(records, xpathSApply, ".//cto:initials", xmlValue, namespaces = "cto")
 	authInit[sapply(authInit, is.list)] <- NA
@@ -177,7 +177,7 @@ extractXML <- function(theFile) {
 	countries[sapply(countries, is.list)] <- NA
 	countries <- sapply(countries, paste, collapse = "|")
 	countries <- sapply(strsplit(countries, "|", fixed = TRUE), unique) ## remove the duplicate country listings
-	countries <- sapply(countries, paste, collapse = "|") 
+	countries <- sapply(countries, paste, collapse = "|")
 	year <- lapply(records, xpathSApply, "./prism:coverDate", xmlValue, namespaces = c(prism = "http://prismstandard.org/namespaces/basic/2.0/"))
 	year[sapply(year, is.list)] <- NA
 	year <- unlist(year)

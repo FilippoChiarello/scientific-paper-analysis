@@ -6,6 +6,10 @@ library(tidyverse)
 # create the query with the wanted content
 interest_fields <- ''
 
+# insert you Scopus API key
+
+key <- ""
+
 for (i in 1983:2020){
 
   print(i)
@@ -16,7 +20,7 @@ for (i in 1983:2020){
     query <- str_c("PUBYEAR = ", i, " AND TITLE-ABS-KEY (", interest_fields, ")")
 
     # download an xml
-    xml_output <- searchByString(string = query, outfile = "testdata.xml")
+    xml_output <- searchByString(string = query, outfile = "testdata.xml", key = key)
 
     # translate the xml in to a table
     paper_table <- extractXML(xml_output)
